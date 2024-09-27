@@ -15,6 +15,7 @@ public class SmashObjectSpawner : MonoBehaviour
     public string gameOverSceneName;       // Nome da cena de Game Over
     public TextMeshProUGUI scoreText;      // Referência ao TextMeshProUGUI que exibirá a pontuação
     public int timePenalty = 1;            // Valor a ser subtraído por segundo
+    public float timeInterval = 1f;        // Intervalo em segundos entre cada redução de pontuação (agora ajustável no Inspector)
 
     private int currentSpawnCount = 0;     // Número atual de objetos ativos na cena
     private int score = 0;                 // Sistema de pontuação
@@ -27,8 +28,8 @@ public class SmashObjectSpawner : MonoBehaviour
         // Inicializa o texto da pontuação
         UpdateScoreText();
 
-        // Inicia a chamada repetida da função para reduzir a pontuação a cada segundo
-        InvokeRepeating("ReduceScoreOverTime", 1f, 1f);
+        // Inicia a chamada repetida da função para reduzir a pontuação usando o intervalo de tempo definido
+        InvokeRepeating("ReduceScoreOverTime", timeInterval, timeInterval);
     }
 
     IEnumerator SpawnObjects()
@@ -96,7 +97,7 @@ public class SmashObjectSpawner : MonoBehaviour
         }
         else if (score < -5)
         {
-            // Se não houver mais objetos ativos e a pontuação for menor que a necessária, vai para o Game Over
+            // Se a pontuação for menor que o limite, vai para o Game Over
             Debug.Log("Game Over!");
             SceneManager.LoadScene(gameOverSceneName);  // Carrega a cena de Game Over
         }
