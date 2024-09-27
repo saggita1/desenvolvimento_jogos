@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using TMPro;  // Necessário para trabalhar com TextMeshPro
+using TMPro;
 
 public class SmashObjectSpawner : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class SmashObjectSpawner : MonoBehaviour
     public string nextSceneName;           // Nome da próxima cena
     public string gameOverSceneName;       // Nome da cena de Game Over
     public TextMeshProUGUI scoreText;      // Referência ao TextMeshProUGUI que exibirá a pontuação
+    public int timePenalty = 1;            // Valor a ser subtraído por segundo
 
     private int currentSpawnCount = 0;     // Número atual de objetos ativos na cena
     private int score = 0;                 // Sistema de pontuação
@@ -25,6 +26,9 @@ public class SmashObjectSpawner : MonoBehaviour
 
         // Inicializa o texto da pontuação
         UpdateScoreText();
+
+        // Inicia a chamada repetida da função para reduzir a pontuação a cada segundo
+        InvokeRepeating("ReduceScoreOverTime", 1f, 1f);
     }
 
     IEnumerator SpawnObjects()
@@ -110,5 +114,12 @@ public class SmashObjectSpawner : MonoBehaviour
     {
         Time.timeScale = 1;  // Restaura o tempo antes de carregar a próxima fase
         SceneManager.LoadScene(nextSceneName);  // Carrega a próxima cena
+    }
+
+    // Função chamada repetidamente para diminuir a pontuação ao longo do tempo
+    void ReduceScoreOverTime()
+    {
+        score -= timePenalty;
+        UpdateScoreText();
     }
 }
