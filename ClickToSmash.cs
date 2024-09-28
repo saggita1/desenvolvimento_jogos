@@ -42,6 +42,12 @@ public class ClickToSmash : MonoBehaviour
 
     void OnMouseDown()
     {
+        // Verifica se o jogo está pausado
+        if (Time.timeScale == 0)
+        {
+            return; // Não faz nada se o jogo estiver pausado
+        }
+
         if (!isDestroyed && spriteRenderer != null && destroyedSprite != null)
         {
             // Trocar para o sprite de destruído
