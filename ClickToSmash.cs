@@ -10,18 +10,19 @@ public class ClickToSmash : MonoBehaviour
     public SmashObjectSpawner spawner;     // Referência ao spawner para atualizar a pontuação
     public float minSpeed = 1f;            // Velocidade mínima de movimento
     public float maxSpeed = 5f;            // Velocidade máxima de movimento
+    public bool damagesLife = false;       // Indica se este objeto deve subtrair vida
+    public int lifeDamage = 5;             // Quantidade de vida subtraída (se for um objeto que subtrai vida)
 
     private Rigidbody2D rb;                // Componente de física para o movimento
 
-    // Evento para notificar quando o objeto é destruído
-    public delegate void ObjectDestroyed(int pointValue);
+    // Modificação: evento aceita dois parâmetros a mais para vida e se afeta a vida
+    public delegate void ObjectDestroyed(int pointValue, int lifeDamage, bool damagesLife);
     public event ObjectDestroyed OnDestroyed;
 
     void Start()
     {
-        // Tenta pegar o SpriteRenderer do objeto atual
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>(); // Obtém o Rigidbody2D para aplicar o movimento
+        rb = GetComponent<Rigidbody2D>();
 
         if (spriteRenderer == null)
         {
@@ -42,62 +43,52 @@ public class ClickToSmash : MonoBehaviour
 
     void OnMouseDown()
     {
-        // Verifica se o jogo está pausado
+        // Adicionando verificação para pausar o clique se o jogo estiver pausado
         if (Time.timeScale == 0)
         {
-            return; // Não faz nada se o jogo estiver pausado
+            return; // Não permite cliques enquanto o jogo está pausado
         }
 
+        // Verifica se o objeto já foi destruído e se ainda tem o sprite
         if (!isDestroyed && spriteRenderer != null && destroyedSprite != null)
         {
-            // Trocar para o sprite de destruído
             spriteRenderer.sprite = destroyedSprite;
-
-            // Define que o objeto foi destruído para evitar múltiplos cliques
             isDestroyed = true;
 
-            // Notifica o spawner que o objeto foi destruído, passando o valor de pontos
+            // Notifica o spawner se o objeto foi destruído manualmente, passando os valores
             if (OnDestroyed != null)
             {
-                OnDestroyed.Invoke(pointValue);
+                OnDestroyed.Invoke(pointValue, lifeDamage, damagesLife);
             }
 
-            // Destrói o objeto após um pequeno delay
+            // Destrói o objeto após um pequeno atraso
             Destroy(gameObject, 0.5f);
         }
     }
 
-    // Função para auto-destruição
     void AutoDestroy()
     {
         if (!isDestroyed)
         {
-            // Se o objeto não foi destruído manualmente, apenas destrua sem mudar o sprite
             isDestroyed = true;
 
             // Notifica o spawner que o objeto foi destruído sem ganhar ou perder pontos
             if (OnDestroyed != null)
             {
-                OnDestroyed.Invoke(0);  // Nenhum ponto é adicionado ou subtraído
+                OnDestroyed.Invoke(0, 0, false); // Nenhum ponto e sem dano à vida
             }
 
-            // Destrói o objeto e remove da cena
+            // Destrói o objeto após um pequeno atraso
             Destroy(gameObject);
         }
     }
 
-    // Função para adicionar movimento aleatório
     void AddRandomMovement()
     {
         if (rb != null)
         {
-            // Gera uma direção aleatória
             Vector2 randomDirection = Random.insideUnitCircle.normalized;
-
-            // Gera uma velocidade aleatória entre minSpeed e maxSpeed
             float randomSpeed = Random.Range(minSpeed, maxSpeed);
-
-            // Aplica a velocidade ao Rigidbody2D
             rb.velocity = randomDirection * randomSpeed;
         }
     }
