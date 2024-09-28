@@ -77,7 +77,7 @@ public class SmashObjectSpawner : MonoBehaviour
         else
         {
             score += pointValue;
-            Debug.Log("Pontuação: " + score);
+            Debug.Log("Score: " + score);
             UpdateScoreText();
         }
 
@@ -89,7 +89,7 @@ public class SmashObjectSpawner : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = score.ToString();
+            scoreText.text ="Pontos:\n" + score.ToString() + "/" + targetScore;
         }
     }
 
