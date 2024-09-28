@@ -1,6 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using TMPro;
 
 public class SmashObjectSpawner : MonoBehaviour
@@ -11,14 +11,17 @@ public class SmashObjectSpawner : MonoBehaviour
     public Vector2 spawnArea = new Vector2(10, 5); // Área de spawn (X, Y)
     public int targetScore = 100;          // Pontuação necessária para passar de fase
     public GameObject victoryPopup;        // Referência ao painel do pop-up de vitória
+    public GameObject pausePopup;          // Referência ao painel do pop-up de pausa
     public string nextSceneName;           // Nome da próxima cena
     public string gameOverSceneName;       // Nome da cena de Game Over
     public TextMeshProUGUI scoreText;      // Referência ao TextMeshProUGUI que exibirá a pontuação
     public int timePenalty = 1;            // Valor a ser subtraído por segundo
-    public float timeInterval = 1f;        // Intervalo em segundos entre cada redução de pontuação (agora ajustável no Inspector)
+    public float penaltyInterval = 1f;     // Intervalo em segundos para subtração do score
+    public int scoreLimit = -5;            // Limite de score para Game Over
 
     private int currentSpawnCount = 0;     // Número atual de objetos ativos na cena
     private int score = 0;                 // Sistema de pontuação
+    private bool isPaused = false;         // Indica se o jogo está pausado ou não
 
     void Start()
     {
@@ -28,8 +31,17 @@ public class SmashObjectSpawner : MonoBehaviour
         // Inicializa o texto da pontuação
         UpdateScoreText();
 
-        // Inicia a chamada repetida da função para reduzir a pontuação usando o intervalo de tempo definido
-        InvokeRepeating("ReduceScoreOverTime", timeInterval, timeInterval);
+        // Inicia a chamada repetida da função para reduzir a pontuação a cada segundo
+        InvokeRepeating("ReduceScoreOverTime", penaltyInterval, penaltyInterval);
+    }
+
+    void Update()
+    {
+        // Detecta se a tecla de pausa (P ou Esc) foi pressionada
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();  // Alterna entre pausar e retomar o jogo
+        }
     }
 
     IEnumerator SpawnObjects()
@@ -95,7 +107,7 @@ public class SmashObjectSpawner : MonoBehaviour
             Debug.Log("Passou de fase!");
             ShowVictoryPopup();  // Chama o método para exibir o pop-up de vitória
         }
-        else if (score < -5)
+        else if (score < scoreLimit)
         {
             // Se a pontuação for menor que o limite, vai para o Game Over
             Debug.Log("Game Over!");
@@ -122,5 +134,34 @@ public class SmashObjectSpawner : MonoBehaviour
     {
         score -= timePenalty;
         UpdateScoreText();
+    }
+
+    // Alterna entre pausar e retomar o jogo
+    void TogglePause()
+    {
+        if (isPaused)
+        {
+            ResumeGame();  // Se já está pausado, retoma o jogo
+        }
+        else
+        {
+            PauseGame();   // Se não está pausado, pausa o jogo
+        }
+    }
+
+    // Função para pausar o jogo e exibir o pop-up de pausa
+    void PauseGame()
+    {
+        Time.timeScale = 0;  // Pausa o jogo
+        pausePopup.SetActive(true);  // Exibe o pop-up de pausa
+        isPaused = true;  // Marca que o jogo está pausado
+    }
+
+    // Função para retomar o jogo a partir do pop-up de pausa
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;  // Retoma o jogo
+        pausePopup.SetActive(false);  // Esconde o pop-up de pausa
+        isPaused = false;  // Marca que o jogo não está mais pausado
     }
 }
