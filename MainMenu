@@ -5,7 +5,6 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        // Trocar para a cena principal do jogo (substitua "GameScene" pelo nome da sua cena principal)
         SceneManager.LoadScene("fase1");
     }
 }
