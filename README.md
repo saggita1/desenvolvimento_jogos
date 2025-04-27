@@ -36,10 +36,6 @@ O jogo foi projetado com uma **interface simples**, **feedback visual com explos
 - Ajustes realizados na curva de dificuldade e balanceamento do dinamite.
 - Estabilidade geral alcançada sem a necessidade de otimizações profundas, dada a simplicidade do projeto.
 
-## 📷 Imagens
-
-(Imagens do jogo podem ser inseridas aqui, como capturas de tela ou gifs curtos)
-
 ## ✅ Conclusão
 
 **No Bombs** cumpriu seu papel como trabalho final da disciplina, oferecendo uma experiência divertida e acessível, com desafios crescentes e jogabilidade intuitiva. O projeto demonstra o domínio do Unity e a aplicação prática dos conceitos aprendidos ao longo do curso.
