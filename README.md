@@ -40,7 +40,5 @@ O jogo foi projetado com uma **interface simples**, **feedback visual com explos
 
 **No Bombs** cumpriu seu papel como trabalho final da disciplina, oferecendo uma experiência divertida e acessível, com desafios crescentes e jogabilidade intuitiva. O projeto demonstra o domínio do Unity e a aplicação prática dos conceitos aprendidos ao longo do curso.
 
----
-
-> Desenvolvido com dedicação por **Ryan Pimentel de Oliveira**  
+--- 
 > UFRR – Ciência da Computação  
